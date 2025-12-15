@@ -1,0 +1,19 @@
+- route:
+    id: route-32de
+    nodePrefixId: route-5e0
+    from:
+      id: from-185e
+      uri: timer
+      parameters:
+        timerName: hello
+        period: "5000"
+      steps:
+        - setBody:
+            id: setBody-b06f
+            expression:
+              simple:
+                id: simple-93bb
+                expression: Hello from Karavan at ${date:now:yyyy-MM-dd HH:mm:ss}
+        - log:
+            id: log-59d4
+            message: "First Test says: ${body}"
