@@ -13,3 +13,25 @@
         - log:
             id: log-2a27
             message: "Recived : ${body}"
+        - setHeader:
+            id: setHeader-3c96
+            name: Content-Type
+            expression:
+              simple:
+                id: simple-00c9
+                expression: application/json
+        - marshal:
+            id: marshal-5468
+            json:
+              id: json-9b4e
+              library: Jackson
+        - to:
+            id: to-08da
+            uri: http
+            parameters:
+              httpUri: host.docker.internal:4004/odata/v4/simple-erp/Orders
+              httpMethod: POST
+              authPassword: "{{env:ERP_PASSWORD}}"
+              authUsername: "{{env:ERP_USER}}"
+              authMethod: Basic
+              authMethodPriority: Basic

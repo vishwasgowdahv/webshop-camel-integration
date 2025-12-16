@@ -1,8 +1,13 @@
 services:
-  webshop-erp-integration:
-    image: webshop-erp-integration
-    restart: always
-    ports:
-      - "8082:8080"
-    networks:
-      - karavan
+    webshop-erp-integration:
+        image: webshop-erp-integration
+        restart: always
+        ports:
+          - "8082:8080"
+        networks:
+          - karavan
+        environment:
+          - ERP_USER=service-user
+          - ERP_PASSWORD=service-user
+          - MQ_USER=guest
+          - MQ_PASSWORD=guest
