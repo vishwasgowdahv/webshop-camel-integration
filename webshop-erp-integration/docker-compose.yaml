@@ -1,0 +1,8 @@
+services:
+  webshop-erp-integration:
+    image: webshop-erp-integration
+    restart: always
+    ports:
+      - "8082:8080"
+    networks:
+      - karavan
