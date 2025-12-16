@@ -1,0 +1,15 @@
+- route:
+    id: route-1432
+    nodePrefixId: route-602
+    from:
+      id: from-032d
+      uri: kamelet:spring-rabbitmq-source
+      parameters:
+        host: rabbitmq
+        port: 5672
+        queues: order.queue
+        exchangeName: default
+      steps:
+        - log:
+            id: log-2a27
+            message: "Recived : ${body}"
