@@ -14,24 +14,92 @@
             id: log-2a27
             message: "Recived : ${body}"
         - setHeader:
-            id: setHeader-3c96
+            id: setHeader-d916
+            name: CamelHttpMethod
+            expression:
+              simple:
+                id: simple-d39e
+                expression: POST
+        - setHeader:
+            id: setHeader-8b01
             name: Content-Type
+            expression:
+              simple:
+                id: simple-10a0
+                expression: application/json
+        - setHeader:
+            id: setHeader-3c96
+            name: Accept
             expression:
               simple:
                 id: simple-00c9
                 expression: application/json
-        - marshal:
-            id: marshal-5468
-            json:
-              id: json-9b4e
-              library: Jackson
+        - setHeader:
+            id: setHeader-7159
+            name: Authorization
+            expression:
+              simple:
+                id: simple-31b5
+                expression: Basic c2VydmljZS11c2VyOnNlcnZpY2UtdXNlcg==
+        - setBody:
+            id: setBody-28cb
+            expression:
+              simple:
+                id: simple-0df5
+                expression: ${bodyAs(String)}
+        - to:
+            id: to-3568
+            uri: kamelet:log-action
+            parameters:
+              showHeaders: true
+              showBody: true
         - to:
             id: to-08da
             uri: http
             parameters:
               httpUri: host.docker.internal:4004/odata/v4/simple-erp/Orders
-              httpMethod: POST
-              authPassword: "{{env:ERP_PASSWORD}}"
-              authUsername: "{{env:ERP_USER}}"
-              authMethod: Basic
-              authMethodPriority: Basic
+        - log:
+            id: log-4468
+            message: ${body}
+        - setBody:
+            id: setBody-e358
+            expression:
+              jsonpath:
+                id: jsonpath-5396
+                expression: $.ID
+        - setBody:
+            id: setBody-a4f8
+            expression:
+              simple:
+                id: simple-7491
+                expression: |-
+                  {
+                    "ERP_ID": "${body}",
+                    "status": "CREATED"
+                  }
+        - log:
+            id: log-626b
+            message: "RESPONSE ID : ${body}"
+        - setHeader:
+            id: setHeader-f2ce
+            name: CamelSpringRabbitmqCorrelationId
+            expression:
+              simple:
+                id: simple-0372
+                expression: ${header.CamelSpringRabbitmqCorrelationId}
+        - setHeader:
+            id: setHeader-7ba8
+            name: CamelSpringRabbitmqRoutingKey
+            expression:
+              simple:
+                id: simple-e9de
+                expression: ${header.CamelSpringRabbitmqReplyTo}
+        - to:
+            id: to-3b99
+            uri: kamelet:spring-rabbitmq-sink
+            pattern: InOnly
+            parameters:
+              host: rabbitmq
+              port: 5672
+              exchangeName: order.response.exchange
+              routingKey: order.response.queue
